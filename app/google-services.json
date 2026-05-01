@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "340704470273",
+    "project_id": "agent-skills-07",
+    "storage_bucket": "agent-skills-07.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:340704470273:android:5b2b90c04d24d1987f6700",
+        "android_client_info": {
+          "package_name": "com.example.skills"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsMr3lFN5SuPOtEqRuetE0S4lUd8-og7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
