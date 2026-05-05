@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark">
+
+    <!-- Header -->
+    <TextView
+        android:id="@+id/tvMySkillsHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="My Skills"
+        android:textColor="@color/text_primary"
+        android:textSize="28sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivMore"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="24dp"
+        android:src="@android:drawable/ic_menu_more"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_secondary" />
+
+    <!-- Profile Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardProfile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="20dp"
+        app:cardBackgroundColor="@color/surface_dark"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMySkillsHeader"
+        app:strokeWidth="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <!-- Avatar -->
+            <TextView
+                android:id="@+id/tvAvatar"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/shape_icon_bg"
+                android:backgroundTint="@color/brand_primary"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="RS" />
+
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/btnEditProfile"
+                app:layout_constraintStart_toEndOf="@+id/tvAvatar"
+                app:layout_constraintTop_toTopOf="@+id/tvAvatar"
+                tools:text="Ravi S." />
+
+            <TextView
+                android:id="@+id/tvBuilderLevel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/brand_secondary"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="@+id/tvUserName"
+                app:layout_constraintStart_toStartOf="@+id/tvUserName"
+                app:layout_constraintTop_toBottomOf="@+id/tvUserName"
+                tools:text="Builder · Level 4" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditProfile"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                android:textColor="@color/text_secondary"
+                app:cornerRadius="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="@color/surface_variant"
+                app:strokeWidth="1dp" />
+
+            <!-- Stats Row -->
+            <LinearLayout
+                android:id="@+id/statsRow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAvatar">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvInstalledCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/text_primary"
+                        android:textSize="22sp"
+                        tools:text="7" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Installed"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="40dp"
+                    android:background="@color/surface_variant" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvBuiltCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/text_primary"
+                        android:textSize="22sp"
+                        tools:text="3" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Built"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="40dp"
+                    android:background="@color/surface_variant" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvSharedUses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/text_primary"
+                        android:textSize="22sp"
+                        tools:text="1.2k" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shared uses"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Active Skills Header -->
+    <TextView
+        android:id="@+id/tvActiveSkillsHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:letterSpacing="0.1"
+        android:text="ACTIVE SKILLS"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardProfile" />
+
+    <!-- Active Skills List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvActiveSkills"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvActiveSkillsHeader"
+        tools:listitem="@layout/item_active_skill"
+        tools:itemCount="4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark">
+
+    <!-- Header Section -->
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="SkillForge"
+        android:textColor="@color/text_primary"
+        android:textSize="28sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/shape_icon_bg"
+        android:backgroundTint="@color/surface_variant"
+        android:padding="8dp"
+        android:src="@android:drawable/ic_menu_myplaces"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_secondary" />
+
+    <!-- Search Bar -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilSearch"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:hint="Search skills..."
+        app:boxBackgroundColor="@color/surface_dark"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="1dp"
+        app:boxStrokeColor="@color/brand_primary"
+        app:hintTextColor="@color/text_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvHeader"
+        app:startIconDrawable="@android:drawable/ic_menu_search"
+        app:startIconTint="@color/text_secondary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Categories -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCategories"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="24dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tilSearch"
+        tools:listitem="@layout/item_chip" />
+
+    <!-- Trending header -->
+    <TextView
+        android:id="@+id/tvTrending"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:letterSpacing="0.1"
+        android:text="TRENDING"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvCategories" />
+        
+    <TextView
+        android:id="@+id/tvSeeAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="See all"
+        android:textColor="@color/brand_primary"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTrending"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTrending" />
+
+    <!-- Skills List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSkills"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        android:layoutAnimation="@anim/layout_animation_fall_down"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTrending"
+        tools:listitem="@layout/item_skill_card" />
+
+    <!-- Shimmer Loader -->
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTrending"
+        app:shimmer_duration="1200"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include layout="@layout/item_skill_placeholder" />
+            <include layout="@layout/item_skill_placeholder" />
+            <include layout="@layout/item_skill_placeholder" />
+            <include layout="@layout/item_skill_placeholder" />
+            <include layout="@layout/item_skill_placeholder" />
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <!-- Empty State -->
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No skills found."
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTrending" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

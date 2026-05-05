@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_discover">
+
+    <fragment
+        android:id="@+id/nav_discover"
+        android:name="com.example.skills.ui.fragments.DiscoverFragment"
+        android:label="Discover"
+        tools:layout="@layout/fragment_discover" />
+
+    <fragment
+        android:id="@+id/nav_build"
+        android:name="com.example.skills.ui.fragments.BuildFragment"
+        android:label="Build"
+        tools:layout="@layout/fragment_build">
+        <action
+            android:id="@+id/action_build_to_createSkill"
+            app:destination="@id/nav_create_skill" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_my_skills"
+        android:name="com.example.skills.ui.fragments.MySkillsFragment"
+        android:label="My Skills"
+        tools:layout="@layout/fragment_my_skills" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.example.skills.ui.fragments.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/nav_create_skill"
+        android:name="com.example.skills.ui.fragments.CreateSkillFragment"
+        android:label="Create Skill"
+        tools:layout="@layout/fragment_create_skill" />
+
+    <fragment
+        android:id="@+id/nav_chat_builder"
+        android:name="com.example.skills.ui.fragments.ChatBuilderFragment"
+        android:label="Conversational Builder"
+        tools:layout="@layout/fragment_chat_builder" />
+</navigation>

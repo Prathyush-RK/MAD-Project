@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark"
+    android:orientation="vertical">
+
+    <!-- Header Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="@color/text_primary" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:text="Conversational Builder"
+            android:textColor="@color/text_primary"
+            android:textSize="22sp" />
+    </LinearLayout>
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/surface_dark" />
+
+    <!-- Chat Messages list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChat"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingVertical="16dp"
+        tools:listitem="@layout/item_chat_message" />
+
+    <!-- Generation Loading Layout -->
+    <LinearLayout
+        android:id="@+id/layoutGenerating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:visibility="gone">
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminateTint="@color/brand_primary"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Autonomously generating SKILL.md..."
+            android:textColor="@color/text_secondary" />
+    </LinearLayout>
+
+    <!-- Generation Result Layout -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layoutResult"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView
+                android:id="@+id/tvGeneratedMarkdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+                
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDraft"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="Save Draft" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPublish"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/brand_primary"
+                    android:text="Publish"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Input Box (Visible only during chat) -->
+    <LinearLayout
+        android:id="@+id/layoutInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface_dark"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Type your response..."
+            android:inputType="textMultiLine"
+            android:maxLines="4"
+            android:minHeight="48dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_hint" />
+
+        <ImageView
+            android:id="@+id/btnSend"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="12dp"
+            android:src="@android:drawable/ic_menu_send"
+            app:tint="@color/brand_primary" />
+    </LinearLayout>
+
+</LinearLayout>
