@@ -266,5 +266,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ---
 
 <p align="center">
-  Built with ❤️ by <a href="https://github.com/Prathyush-RK">Prathyush R K</a>
+  Built with ❤️ by <a href="https://github.com/Prathyush-RK">Prathyush R</a>
 </p>
