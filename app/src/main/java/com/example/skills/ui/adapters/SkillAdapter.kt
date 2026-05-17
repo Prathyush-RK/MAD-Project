@@ -12,7 +12,6 @@ import com.example.skills.databinding.ItemSkillCardBinding
 import java.text.DecimalFormat
 
 class SkillAdapter(
-    private val onInstallClick: (Skill) -> Unit,
     private val onItemClick: (Skill) -> Unit
 ) : ListAdapter<Skill, SkillAdapter.SkillViewHolder>(SkillDiffCallback()) {
 
@@ -20,7 +19,7 @@ class SkillAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(skill: Skill) {
-            binding.tvTitle.text = skill.title
+            binding.tvTitle.text = skill.title.replace(Regex("^#+\\s*"), "")
             binding.tvDescription.text = skill.description
 
             val df = DecimalFormat("#.1")
@@ -43,16 +42,6 @@ class SkillAdapter(
                 }
             } else {
                 binding.ivIcon.setImageResource(android.R.drawable.ic_menu_edit)
-            }
-
-            binding.btnInstall.setOnClickListener {
-                onInstallClick(skill)
-                // Visual feedback for installation
-                binding.btnInstall.text = "Installed"
-                binding.btnInstall.setTextColor(android.graphics.Color.WHITE)
-                binding.btnInstall.strokeWidth = 0
-                binding.btnInstall.setBackgroundColor(android.graphics.Color.parseColor("#4CAF50"))
-                binding.btnInstall.isEnabled = false
             }
 
             binding.root.setOnClickListener {

@@ -25,6 +25,9 @@ class CreateSkillViewModel @Inject constructor(
     private val _currentStep = MutableStateFlow(1)
     val currentStep: StateFlow<Int> = _currentStep.asStateFlow()
 
+    private val _draftLoaded = MutableStateFlow(false)
+    val draftLoaded: StateFlow<Boolean> = _draftLoaded.asStateFlow()
+
     private val _isSaving = MutableStateFlow(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
@@ -44,6 +47,8 @@ class CreateSkillViewModel @Inject constructor(
     var instructions: String = ""
     var examplePrompt: String = ""
     var exampleResponse: String = ""
+    
+    private var currentDraftId: String? = null
 
     fun nextStep() {
         if (_currentStep.value < 4) {
@@ -82,7 +87,10 @@ class CreateSkillViewModel @Inject constructor(
                     throw IllegalStateException("Malicious content detected (e.g. destructive shell commands).")
                 }
 
-                val skillId = java.util.UUID.randomUUID().toString()
+                val sanitizedTitle = skillName.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-')
+                val shortUuid = java.util.UUID.randomUUID().toString().substring(0, 8)
+                val generatedId = if (sanitizedTitle.isNotEmpty()) "$sanitizedTitle-$shortUuid" else "skill-$shortUuid"
+                val skillId = currentDraftId ?: generatedId
 
                 // 3. Upload to Firebase Storage
                 val storageRef = storage.reference.child("skills/$skillId/SKILL.md")
@@ -112,6 +120,12 @@ class CreateSkillViewModel @Inject constructor(
                 if (publishToMarketplace) {
                     // Public Marketplace
                     firestore.collection("skills").document(skillId).set(skillData).await()
+                    
+                    // If we published a draft, clean it up from drafts collection
+                    if (currentDraftId != null) {
+                        firestore.collection("users").document(user.uid).collection("drafts").document(currentDraftId!!).delete().await()
+                        currentDraftId = null // clear out after publish
+                    }
                 } else {
                     // Private Draft
                     firestore.collection("users")
@@ -120,6 +134,7 @@ class CreateSkillViewModel @Inject constructor(
                         .document(skillId)
                         .set(skillData)
                         .await()
+                    currentDraftId = skillId // Next save uses same ID
                 }
 
                 _saveSuccess.value = true
@@ -170,9 +185,18 @@ class CreateSkillViewModel @Inject constructor(
         viewModelScope.launch {
             _isSaving.value = true
             try {
-                // Publish directly to marketplace
-                saveSkillToFirestore(publishToMarketplace = true)
-                _publishResult.value = Pair(100, true)
+                val markdown = generateMarkdown()
+                val feedback = geminiService.validateSkill(markdown)
+                val score = extractScore(feedback)
+
+                if (score >= 70) {
+                    saveSkillToFirestore(publishToMarketplace = true)
+                    _publishResult.value = Pair(score, true)
+                } else {
+                    saveSkillToFirestore(publishToMarketplace = false)
+                    _publishResult.value = Pair(score, false)
+                    _validationFeedback.value = "Skill scored $score (minimum 70 required). Saved to drafts.\n\n$feedback"
+                }
             } catch (e: Exception) {
                 _validationFeedback.value = "Publishing failed: ${e.message}"
                 _isSaving.value = false
@@ -231,5 +255,48 @@ class CreateSkillViewModel @Inject constructor(
 
     private fun String.containsAny(vararg keywords: String): Boolean {
         return keywords.any { this.contains(it) }
+    }
+
+    fun parseMarkdownToFields(title: String, markdown: String) {
+        skillName = title
+        val sections = markdown.split("##")
+        sections.forEach { section ->
+            val trim = section.trim()
+            if (trim.startsWith("Persona", ignoreCase = true)) {
+                persona = trim.substringAfter("Persona").trim()
+            } else if (trim.startsWith("Context", ignoreCase = true)) {
+                context = trim.substringAfter("Context").trim()
+            } else if (trim.startsWith("Instructions", ignoreCase = true)) {
+                instructions = trim.substringAfter("Instructions").trim()
+            } else if (trim.startsWith("Example", ignoreCase = true)) {
+                val exampleText = trim.substringAfter("Example").trim()
+                val userPart = exampleText.substringAfter("**User:**", "").substringBefore("**AI:**").trim()
+                val aiPart = exampleText.substringAfter("**AI:**", "").trim()
+                examplePrompt = userPart
+                exampleResponse = aiPart
+            }
+        }
+    }
+
+    fun loadDraftFromUrl(draftId: String, url: String) {
+        viewModelScope.launch {
+            try {
+                val ref = storage.getReferenceFromUrl(url)
+                val bytes = ref.getBytes(1024 * 1024).await() // 1MB max
+                val markdown = String(bytes, Charsets.UTF_8)
+                
+                val user = auth.currentUser
+                if (user != null) {
+                    currentDraftId = draftId
+                    val doc = firestore.collection("users").document(user.uid)
+                        .collection("drafts").document(draftId).get().await()
+                    val title = doc.getString("title") ?: "Draft Skill"
+                    parseMarkdownToFields(title, markdown)
+                    _draftLoaded.value = true
+                }
+            } catch (e: Exception) {
+                // handle error
+            }
+        }
     }
 }

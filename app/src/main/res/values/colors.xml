@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Backgrounds -->
-    <color name="bg_dark">#0F0F12</color>
-    <color name="surface_dark">#1A1A1F</color>
-    <color name="surface_variant">#24242B</color>
+    <!-- Backgrounds (Warm Paper Neutrals) -->
+    <color name="bg_dark">#FCF9F9</color> <!-- Warm Ash Cream -->
+    <color name="surface_dark">#FAFAFA</color> <!-- Crisp Paper White -->
+    <color name="surface_variant">#EBEBEB</color> <!-- Paper Mist -->
 
-    <!-- Brand Colors -->
-    <color name="brand_primary">#6366F1</color>
-    <color name="brand_secondary">#A78BFA</color>
-    <color name="brand_accent">#F472B6</color>
+    <!-- Brand Colors (The One Voice) -->
+    <color name="brand_primary">#E11D48</color> <!-- Editorial Magenta -->
+    <color name="brand_secondary">#F4C5D3</color> <!-- Magenta Veil -->
+    <color name="brand_accent">#BE123C</color> <!-- Editorial Magenta Deep -->
 
-    <!-- Text Colors -->
-    <color name="text_primary">#F8FAFC</color>
-    <color name="text_secondary">#94A3B8</color>
-    <color name="text_hint">#64748B</color>
+    <!-- Text Colors (Ink) -->
+    <color name="text_primary">#1A1A1A</color> <!-- Deep Graphite -->
+    <color name="text_secondary">#404040</color> <!-- Soft Charcoal -->
+    <color name="text_hint">#8C8C8C</color> <!-- Mid Ash -->
 
     <!-- Status Colors -->
     <color name="status_active">#10B981</color>
     <color name="status_draft">#F59E0B</color>
-    <color name="status_inactive">#64748B</color>
+    <color name="status_inactive">#8C8C8C</color>
 
     <!-- Standard Colors -->
     <color name="black">#FF000000</color>

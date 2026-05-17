@@ -51,7 +51,7 @@ class SkillDetailFragment(private val skill: Skill) : BottomSheetDialogFragment(
     }
 
     private fun setupUI() {
-        binding.tvSkillTitle.text = skill.title
+        binding.tvSkillTitle.text = skill.title.replace(Regex("^#+\\s*"), "")
         binding.chipCategory.text = skill.category
         binding.tvSkillDescription.text = skill.description
 
@@ -71,19 +71,37 @@ class SkillDetailFragment(private val skill: Skill) : BottomSheetDialogFragment(
             }
         }
 
-        binding.btnInstall.setOnClickListener {
-            lifecycleScope.launch {
-                binding.btnInstall.isEnabled = false
-                binding.btnInstall.text = "Installing..."
-                val success = repository.installSkill(skill)
-                if (success) {
-                    binding.btnInstall.text = "Installed"
-                    binding.btnInstall.setBackgroundColor(android.graphics.Color.parseColor("#4CAF50"))
-                } else {
-                    binding.btnInstall.isEnabled = true
-                    binding.btnInstall.text = "Install Skill"
-                    Toast.makeText(context, "Failed to install", Toast.LENGTH_SHORT).show()
+
+        binding.btnDownload.setOnClickListener {
+            if (skill.fileUrl.isNotEmpty()) {
+                try {
+                    val request = android.app.DownloadManager.Request(android.net.Uri.parse(skill.fileUrl))
+                        .setTitle("Downloading ${skill.title}")
+                        .setDescription("SkillForge Skill")
+                        .setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        .setDestinationInExternalPublicDir(android.os.Environment.DIRECTORY_DOWNLOADS, "${skill.id}.md")
+                    
+                    val downloadManager = requireContext().getSystemService(android.content.Context.DOWNLOAD_SERVICE) as android.app.DownloadManager
+                    downloadManager.enqueue(request)
+                    Toast.makeText(requireContext(), "Download started", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Download failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(requireContext(), "No file available to download", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btnShare.setOnClickListener {
+            if (skill.fileUrl.isNotEmpty()) {
+                val shareIntent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(android.content.Intent.EXTRA_SUBJECT, "Check out this AI Skill!")
+                    putExtra(android.content.Intent.EXTRA_TEXT, "I found this awesome skill on SkillForge: ${skill.title}\n\nDownload it here: ${skill.fileUrl}")
+                }
+                startActivity(android.content.Intent.createChooser(shareIntent, "Share Skill via"))
+            } else {
+                Toast.makeText(requireContext(), "No link available to share", Toast.LENGTH_SHORT).show()
             }
         }
     }

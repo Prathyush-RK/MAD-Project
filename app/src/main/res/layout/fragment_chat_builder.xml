@@ -7,13 +7,13 @@
     android:background="@color/bg_dark"
     android:orientation="vertical">
 
-    <!-- Header Row -->
+    <!-- ═══ Header Row (always visible) ═══ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="24dp"
+        android:paddingHorizontal="16dp"
         android:paddingTop="24dp"
         android:paddingBottom="12dp">
 
@@ -27,22 +27,23 @@
             app:tint="@color/text_primary" />
 
         <TextView
+            android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:fontFamily="sans-serif-medium"
-            android:text="Conversational Builder"
+            android:text="Chat with AI"
             android:textColor="@color/text_primary"
-            android:textSize="22sp" />
+            android:textSize="18sp" />
     </LinearLayout>
-    
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/surface_dark" />
 
-    <!-- Chat Messages list -->
+    <!-- ═══ PHASE 1: Chat Messages ═══ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChat"
         android:layout_width="match_parent"
@@ -52,74 +53,7 @@
         android:paddingVertical="16dp"
         tools:listitem="@layout/item_chat_message" />
 
-    <!-- Generation Loading Layout -->
-    <LinearLayout
-        android:id="@+id/layoutGenerating"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:visibility="gone">
-        <ProgressBar
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:indeterminateTint="@color/brand_primary"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Autonomously generating SKILL.md..."
-            android:textColor="@color/text_secondary" />
-    </LinearLayout>
-
-    <!-- Generation Result Layout -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/layoutResult"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="gone">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-            <TextView
-                android:id="@+id/tvGeneratedMarkdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:orientation="horizontal">
-                
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnDraft"
-                    style="@style/Widget.Material3.Button.TonalButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:text="Save Draft" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnPublish"
-                    style="@style/Widget.Material3.Button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/brand_primary"
-                    android:text="Publish"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
-    <!-- Input Box (Visible only during chat) -->
+    <!-- Chat Input Box (visible only during chat phase) -->
     <LinearLayout
         android:id="@+id/layoutInput"
         android:layout_width="match_parent"
@@ -154,5 +88,147 @@
             android:src="@android:drawable/ic_menu_send"
             app:tint="@color/brand_primary" />
     </LinearLayout>
+
+    <!-- ═══ PHASE 2: Generating Spinner ═══ -->
+    <LinearLayout
+        android:id="@+id/layoutGenerating"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminateTint="@color/brand_primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Generating your SKILL.md…"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- ═══ PHASE 3: Preview + Actions ═══ -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layoutPreview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preview"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tvPreviewMarkdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:lineSpacingExtra="4dp" />
+
+            <!-- Validation Results Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardValidation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/surface_dark"
+                app:cardCornerRadius="12dp"
+                app:strokeWidth="0dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AI Validation"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-medium" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/tvScoreBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_badge"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="4dp"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:fontFamily="sans-serif-medium"
+                            tools:text="Score: 85" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvValidationFeedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/text_secondary"
+                        android:lineSpacingExtra="4dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDraft"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="Save Draft" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPublish"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/brand_primary"
+                    android:text="Publish"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

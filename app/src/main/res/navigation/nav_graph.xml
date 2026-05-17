@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_build_to_createSkill"
             app:destination="@id/nav_create_skill" />
+        <action
+            android:id="@+id/action_build_to_chatBuilder"
+            app:destination="@id/nav_chat_builder" />
     </fragment>
 
     <fragment

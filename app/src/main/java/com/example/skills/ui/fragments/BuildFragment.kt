@@ -44,12 +44,21 @@ class BuildFragment : Fragment(R.layout.fragment_build) {
             findNavController().navigate(R.id.action_build_to_createSkill)
         }
 
+        binding.btnChatBuilder.setOnClickListener {
+            findNavController().navigate(R.id.action_build_to_chatBuilder)
+        }
+
         binding.btnImportSkill.setOnClickListener {
             // Open the document picker for any file type (specifically looking for markdown)
             filePickerLauncher.launch("*/*")
         }
 
         observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshDrafts()
     }
 
     private fun readAndImportFile(uri: Uri) {
@@ -79,8 +88,11 @@ class BuildFragment : Fragment(R.layout.fragment_build) {
 
             val markdownContent = stringBuilder.toString()
             if (markdownContent.isNotBlank()) {
-                Toast.makeText(requireContext(), "Importing $filename...", Toast.LENGTH_SHORT).show()
-                viewModel.importMarkdownSkill(filename, markdownContent)
+                val bundle = Bundle().apply {
+                    putString("importedMarkdown", markdownContent)
+                    putString("importedTitle", filename)
+                }
+                findNavController().navigate(R.id.action_build_to_createSkill, bundle)
             } else {
                 Toast.makeText(requireContext(), "File is empty", Toast.LENGTH_SHORT).show()
             }
@@ -96,7 +108,11 @@ class BuildFragment : Fragment(R.layout.fragment_build) {
                 launch {
                     viewModel.templates.collect { templates ->
                         binding.rvTemplates.adapter = TemplateAdapter(templates) { template ->
-                            Toast.makeText(requireContext(), "Using: ${template.name}", Toast.LENGTH_SHORT).show()
+                            val bundle = Bundle().apply {
+                                putString("templateName", template.name)
+                                putString("templateDescription", template.description)
+                            }
+                            findNavController().navigate(R.id.action_build_to_createSkill, bundle)
                         }
                     }
                 }
@@ -107,11 +123,13 @@ class BuildFragment : Fragment(R.layout.fragment_build) {
                         binding.rvDrafts.adapter = DraftAdapter(
                             drafts = drafts,
                             onEditClick = { draft ->
-                                Toast.makeText(requireContext(), "Editing: ${draft.title}", Toast.LENGTH_SHORT).show()
-                            },
-                            onPublishClick = { draft ->
-                                viewModel.publishDraft(draft)
-                                Toast.makeText(requireContext(), "Published ${draft.title} to Marketplace!", Toast.LENGTH_SHORT).show()
+                                val bundle = Bundle().apply {
+                                    putString("draftId", draft.id)
+                                    putString("draftTitle", draft.title)
+                                    putString("draftDescription", draft.description)
+                                    putString("draftMarkdownUrl", draft.fileUrl)
+                                }
+                                findNavController().navigate(R.id.action_build_to_createSkill, bundle)
                             }
                         )
                     }

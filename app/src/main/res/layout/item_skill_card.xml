@@ -36,7 +36,7 @@
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/btnInstall"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/ivIcon"
             app:layout_constraintTop_toTopOf="@+id/ivIcon"
             tools:text="Code Reviewer Pro" />
@@ -66,19 +66,6 @@
             app:layout_constraintStart_toStartOf="@+id/tvTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvDescription"
             tools:text="★★★★★  4.9 · 12k installs" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnInstall"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/surface_dark"
-            android:text="Install"
-            android:textColor="@color/brand_primary"
-            app:cornerRadius="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

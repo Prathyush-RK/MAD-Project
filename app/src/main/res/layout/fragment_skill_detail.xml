@@ -74,6 +74,7 @@
                 android:textSize="14sp"
                 tools:text="This skill helps you test React components by generating test cases automatically." />
 
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -130,19 +131,31 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/bg_dark"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnInstall"
-            android:layout_width="match_parent"
+            android:id="@+id/btnDownload"
+            style="@style/Widget.SkillForge.Button.Secondary"
+            android:layout_width="0dp"
             android:layout_height="56dp"
-            android:text="Install Skill"
-            app:cornerRadius="12dp"
-            app:backgroundTint="@color/brand_primary" />
-    </FrameLayout>
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Download" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShare"
+            style="@style/Widget.SkillForge.Button.Primary"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Share" />
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -50,6 +50,30 @@ class CreateSkillFragment : Fragment(R.layout.fragment_create_skill) {
             findNavController().navigateUp()
         }
 
+        arguments?.let { bundle ->
+            val templateName = bundle.getString("templateName")
+            if (templateName != null) {
+                viewModel.skillName = templateName
+                viewModel.persona = bundle.getString("templateDescription") ?: ""
+                populateFieldsFromViewModel()
+            }
+
+            val importedMarkdown = bundle.getString("importedMarkdown")
+            if (importedMarkdown != null) {
+                val title = bundle.getString("importedTitle") ?: "Imported Skill"
+                viewModel.parseMarkdownToFields(title, importedMarkdown)
+                populateFieldsFromViewModel()
+            }
+
+            val draftId = bundle.getString("draftId")
+            if (draftId != null) {
+                val url = bundle.getString("draftMarkdownUrl")
+                if (url != null) {
+                    viewModel.loadDraftFromUrl(draftId, url)
+                }
+            }
+        }
+
         binding.btnNext.setOnClickListener {
             saveCurrentStepData()
             if (viewModel.currentStep.value == 4) {
@@ -101,6 +125,14 @@ class CreateSkillFragment : Fragment(R.layout.fragment_create_skill) {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+                    viewModel.draftLoaded.collect { loaded ->
+                        if (loaded) {
+                            populateFieldsFromViewModel()
+                        }
+                    }
+                }
 
                 launch {
                     viewModel.currentStep.collect { step ->
@@ -189,6 +221,15 @@ class CreateSkillFragment : Fragment(R.layout.fragment_create_skill) {
             binding.btnNext.text = "Next"
             binding.btnDraft.visibility = View.GONE
         }
+    }
+
+    private fun populateFieldsFromViewModel() {
+        binding.etSkillName.setText(viewModel.skillName)
+        binding.etPersona.setText(viewModel.persona)
+        binding.etContext.setText(viewModel.context)
+        binding.etInstructions.setText(viewModel.instructions)
+        binding.etExamplePrompt.setText(viewModel.examplePrompt)
+        binding.etExampleResponse.setText(viewModel.exampleResponse)
     }
 
     override fun onDestroyView() {

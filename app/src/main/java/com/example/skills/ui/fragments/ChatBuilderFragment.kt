@@ -14,6 +14,7 @@ import com.example.skills.R
 import com.example.skills.databinding.FragmentChatBuilderBinding
 import com.example.skills.ui.adapters.ChatAdapter
 import com.example.skills.ui.viewmodels.ChatBuilderViewModel
+import com.example.skills.ui.viewmodels.ChatPhase
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.launch
@@ -65,7 +66,37 @@ class ChatBuilderFragment : Fragment(R.layout.fragment_chat_builder) {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                
+
+                // Phase transitions: toggle which section is visible
+                launch {
+                    viewModel.phase.collect { phase ->
+                        when (phase) {
+                            ChatPhase.CHATTING -> {
+                                binding.tvTitle.text = "Chat with AI"
+                                binding.rvChat.visibility = View.VISIBLE
+                                binding.layoutInput.visibility = View.VISIBLE
+                                binding.layoutGenerating.visibility = View.GONE
+                                binding.layoutPreview.visibility = View.GONE
+                            }
+                            ChatPhase.GENERATING -> {
+                                binding.tvTitle.text = "Generating…"
+                                binding.rvChat.visibility = View.GONE
+                                binding.layoutInput.visibility = View.GONE
+                                binding.layoutGenerating.visibility = View.VISIBLE
+                                binding.layoutPreview.visibility = View.GONE
+                            }
+                            ChatPhase.PREVIEW -> {
+                                binding.tvTitle.text = "Preview"
+                                binding.rvChat.visibility = View.GONE
+                                binding.layoutInput.visibility = View.GONE
+                                binding.layoutGenerating.visibility = View.GONE
+                                binding.layoutPreview.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                }
+
+                // Chat messages
                 launch {
                     viewModel.messages.collect { messages ->
                         chatAdapter.submitList(messages)
@@ -75,52 +106,84 @@ class ChatBuilderFragment : Fragment(R.layout.fragment_chat_builder) {
                     }
                 }
 
+                // Typing indicator
                 launch {
                     viewModel.isTyping.collect { isTyping ->
                         binding.btnSend.isEnabled = !isTyping
                     }
                 }
 
+                // Render preview markdown
                 launch {
-                    viewModel.isGeneratingSkill.collect { isGenerating ->
-                        if (isGenerating) {
-                            binding.rvChat.visibility = View.GONE
-                            binding.layoutInput.visibility = View.GONE
-                            binding.layoutGenerating.visibility = View.VISIBLE
-                        }
-                    }
-                }
-
-                launch {
-                    viewModel.generatedSkillMarkdown.collect { markdown ->
+                    viewModel.generatedMarkdown.collect { markdown ->
                         if (markdown != null) {
-                            binding.layoutGenerating.visibility = View.GONE
-                            binding.layoutResult.visibility = View.VISIBLE
-                            Markwon.create(requireContext()).setMarkdown(binding.tvGeneratedMarkdown, markdown)
+                            val markwon = Markwon.create(requireContext())
+                            markwon.setMarkdown(binding.tvPreviewMarkdown, markdown)
                         }
                     }
                 }
 
+                // Render validation results
                 launch {
-                    viewModel.saveResult.collect { result ->
-                        if (result != null) {
-                            val (success, published) = result
-                            if (success) {
-                                val msg = if (published) "Skill published to Marketplace!" else "Skill saved to Drafts!"
-                                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                                findNavController().navigateUp()
-                            } else {
-                                Toast.makeText(requireContext(), "Failed to save skill.", Toast.LENGTH_SHORT).show()
+                    viewModel.validationScore.collect { score ->
+                        if (score >= 0) {
+                            binding.cardValidation.visibility = View.VISIBLE
+                            binding.tvScoreBadge.text = "Score: $score"
+
+                            // Color the badge based on score
+                            val color = when {
+                                score >= 70 -> android.graphics.Color.parseColor("#4CAF50") // Green
+                                score >= 40 -> android.graphics.Color.parseColor("#FF9800") // Orange
+                                else -> android.graphics.Color.parseColor("#F44336")         // Red
+                            }
+                            binding.tvScoreBadge.background.setTint(color)
+
+                            // Update Publish button label based on score
+                            if (score < 70) {
+                                binding.btnPublish.text = "Publish (score < 70)"
+                                binding.btnPublish.isEnabled = false
                             }
                         }
                     }
                 }
 
                 launch {
+                    viewModel.validationFeedback.collect { feedback ->
+                        if (feedback != null) {
+                            val markwon = Markwon.create(requireContext())
+                            markwon.setMarkdown(binding.tvValidationFeedback, feedback)
+                        }
+                    }
+                }
+
+                // Save result
+                launch {
+                    viewModel.saveResult.collect { result ->
+                        if (result != null) {
+                            val (success, published) = result
+                            if (success) {
+                                val msg = if (published) "Skill published to Marketplace!" else "Skill saved to Drafts!"
+                                Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                                findNavController().navigateUp()
+                            } else {
+                                Toast.makeText(requireContext(), "Failed to save skill.", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
+
+                // Saving state — disable buttons while uploading
+                launch {
                     viewModel.isSaving.collect { saving ->
-                        binding.btnPublish.isEnabled = !saving
                         binding.btnDraft.isEnabled = !saving
-                        binding.btnPublish.text = if (saving) "Saving..." else "Publish"
+                        binding.btnDraft.text = if (saving) "Saving…" else "Save Draft"
+
+                        // Only update Publish if score allows it
+                        val score = viewModel.validationScore.value
+                        if (score >= 70 || score < 0) {
+                            binding.btnPublish.isEnabled = !saving
+                            binding.btnPublish.text = if (saving) "Saving…" else "Publish"
+                        }
                     }
                 }
             }
@@ -132,3 +195,4 @@ class ChatBuilderFragment : Fragment(R.layout.fragment_chat_builder) {
         _binding = null
     }
 }
+

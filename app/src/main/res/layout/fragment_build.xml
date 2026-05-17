@@ -18,24 +18,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="serif"
+            android:textStyle="italic"
             android:text="Build a Skill"
             android:textColor="@color/text_primary"
-            android:textSize="28sp" />
+            android:textSize="40sp" />
 
         <!-- Hero Card: Create from Scratch -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardCreateFromScratch"
+            style="@style/Widget.SkillForge.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="24dp"
-            app:cardBackgroundColor="#1C1C2E"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/brand_primary"
-            app:strokeWidth="1dp">
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/surface_dark">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -46,44 +45,51 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="sans-serif"
                     android:text="Create from scratch"
                     android:textColor="@color/text_primary"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:text="Define behaviour, context &amp; examples"
-                    android:textColor="@color/brand_secondary"
-                    android:textSize="13sp" />
+                    android:textColor="@color/text_secondary"
+                    android:textSize="15sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="24dp"
                     android:orientation="horizontal">
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnNewSkill"
-                        style="@style/Widget.Material3.Button"
+                        style="@style/Widget.SkillForge.Button.Primary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@color/brand_primary"
-                        android:text="+ New Skill"
-                        android:textColor="@color/white"
-                        app:cornerRadius="20dp" />
+                        android:text="Manual" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnImportSkill"
-                        style="@style/Widget.Material3.Button.TextButton"
+                        android:id="@+id/btnChatBuilder"
+                        style="@style/Widget.SkillForge.Button.Secondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Import .md"
-                        android:textColor="@color/brand_primary" />
+                        android:layout_marginStart="16dp"
+                        android:text="Chat with AI" />
                 </LinearLayout>
+                
+                <TextView
+                    android:id="@+id/btnImportSkill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Import .md"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="13sp"
+                    android:textColor="@color/brand_primary"
+                    android:background="?attr/selectableItemBackground" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -93,18 +99,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="48dp"
             android:letterSpacing="0.1"
             android:text="START FROM A TEMPLATE"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp" />
+            android:textColor="@color/text_hint"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:textAllCaps="true" />
 
         <!-- Templates List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvTemplates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="8dp"
             android:nestedScrollingEnabled="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_build_template"
@@ -116,11 +125,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="48dp"
             android:letterSpacing="0.1"
             android:text="MY DRAFTS"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
+            android:textColor="@color/text_hint"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:textAllCaps="true"
             android:visibility="gone" />
 
         <!-- Drafts List -->
@@ -128,7 +139,8 @@
             android:id="@+id/rvDrafts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="8dp"
             android:nestedScrollingEnabled="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_draft"

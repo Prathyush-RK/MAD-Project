@@ -11,18 +11,16 @@ import java.util.Locale
 
 class DraftAdapter(
     private val drafts: List<SkillDraft>,
-    private val onEditClick: (SkillDraft) -> Unit,
-    private val onPublishClick: (SkillDraft) -> Unit
+    private val onEditClick: (SkillDraft) -> Unit
 ) : RecyclerView.Adapter<DraftAdapter.DraftViewHolder>() {
 
     inner class DraftViewHolder(private val binding: ItemDraftBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(draft: SkillDraft) {
-            binding.tvDraftTitle.text = draft.title.ifEmpty { "Untitled Draft" }
+            binding.tvDraftTitle.text = draft.title.replace(Regex("^#+\\s*"), "").ifEmpty { "Untitled Draft" }
             binding.tvDraftStatus.text = "Draft · ${draft.category.ifEmpty { "General" }}"
             binding.btnEdit.setOnClickListener { onEditClick(draft) }
-            binding.btnPublish.setOnClickListener { onPublishClick(draft) }
         }
     }
 

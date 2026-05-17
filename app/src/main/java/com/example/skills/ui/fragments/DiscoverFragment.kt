@@ -38,10 +38,6 @@ class DiscoverFragment : Fragment(R.layout.fragment_discover) {
 
     private fun setupRecyclerViews() {
         skillAdapter = SkillAdapter(
-            onInstallClick = { skill ->
-                viewModel.installSkill(skill)
-                Toast.makeText(requireContext(), "${skill.title} Installed", Toast.LENGTH_SHORT).show()
-            },
             onItemClick = { skill ->
                 val bottomSheet = SkillDetailFragment.newInstance(skill)
                 bottomSheet.show(childFragmentManager, SkillDetailFragment.TAG)
@@ -124,6 +120,11 @@ class DiscoverFragment : Fragment(R.layout.fragment_discover) {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadSkills(reset = true)
     }
 
     override fun onDestroyView() {

@@ -159,7 +159,7 @@ class BuildViewModel @Inject constructor(
         }
     }
 
-    fun publishDraft(draft: SkillDraft) {
+    fun publishDraft(draft: SkillDraft, onResult: ((Boolean) -> Unit)? = null) {
         val user = auth.currentUser ?: return
         viewModelScope.launch {
             _isLoading.value = true
@@ -178,9 +178,12 @@ class BuildViewModel @Inject constructor(
                     
                     // 4. Refresh drafts
                     loadDrafts()
+                    onResult?.invoke(true)
+                } else {
+                    onResult?.invoke(false)
                 }
             } catch (e: Exception) {
-                // Ignore for now
+                onResult?.invoke(false)
             } finally {
                 _isLoading.value = false
             }
