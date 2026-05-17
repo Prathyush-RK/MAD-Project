@@ -90,8 +90,8 @@ class GeminiService @Inject constructor() {
 
     // ── Core API call ──
 
-    private suspend fun callGroq(messages: List<GroqMessage>): String = withContext(Dispatchers.IO) {
-        val body = gson.toJson(GroqRequest(model = model, messages = messages))
+    private suspend fun callGroq(messages: List<GroqMessage>, maxTokens: Int = 1024): String = withContext(Dispatchers.IO) {
+        val body = gson.toJson(GroqRequest(model = model, messages = messages, maxTokens = maxTokens))
         val request = Request.Builder()
             .url(baseUrl)
             .addHeader("Authorization", "Bearer $apiKey")
@@ -121,7 +121,7 @@ class GeminiService @Inject constructor() {
             GroqMessage(role = "system", content = validatorSystemPrompt),
             GroqMessage(role = "user", content = "Markdown Content to Analyze:\n---\n$markdown\n---")
         )
-        return callGroq(messages)
+        return callGroq(messages, maxTokens = 1024)
     }
 
     /**
@@ -132,7 +132,7 @@ class GeminiService @Inject constructor() {
         val messages = listOf(
             GroqMessage(role = "system", content = chatSystemPrompt)
         ) + conversationHistory
-        return callGroq(messages)
+        return callGroq(messages, maxTokens = 512)
     }
 
     /**
@@ -166,6 +166,6 @@ class GeminiService @Inject constructor() {
                 """.trimIndent()
             )
         )
-        return callGroq(messages)
+        return callGroq(messages, maxTokens = 2048)
     }
 }

@@ -123,7 +123,7 @@ class SkillRepository @Inject constructor(
 
     suspend fun getSkillMarkdown(skill: Skill): String = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
         if (skill.promptTemplate.isNotBlank()) {
-            return@withContext skill.promptTemplate
+            return@withContext cleanFrontmatter(skill.promptTemplate)
         }
         if (skill.fileUrl.isNotBlank()) {
             return@withContext try {
@@ -131,12 +131,12 @@ class SkillRepository @Inject constructor(
                 val ref = storage.getReferenceFromUrl(skill.fileUrl)
                 val maxDownloadSizeBytes: Long = 1024 * 1024 * 5 // 5MB
                 val bytes = ref.getBytes(maxDownloadSizeBytes).await()
-                String(bytes, Charsets.UTF_8)
+                cleanFrontmatter(String(bytes, Charsets.UTF_8))
             } catch (e: Exception) {
                 // Fallback: Try downloading as a regular public URL
                 try {
                     Log.d("SkillRepository", "Firebase ref failed, trying direct download: ${skill.fileUrl}")
-                    java.net.URL(skill.fileUrl).readText()
+                    cleanFrontmatter(java.net.URL(skill.fileUrl).readText())
                 } catch (e2: Exception) {
                     Log.e("SkillRepository", "Both download methods failed", e2)
                     "Error loading skill content."
@@ -146,16 +146,39 @@ class SkillRepository @Inject constructor(
         return@withContext "No content available for this skill."
     }
 
+    private fun cleanFrontmatter(markdown: String): String {
+        // Remove standard YAML frontmatter (--- ... ---)
+        val yamlRegex = Regex("^---\\s*\\n([\\s\\S]*?)\\n---\\s*\\n")
+        var cleaned = markdown.replace(yamlRegex, "")
+        
+        // Remove contiguous key: value lines at the start (e.g. name: ..., description: ...)
+        val kvRegex = Regex("^(?:[a-zA-Z0-9_ -]+:[^\\n]*\\n)+\\s*")
+        cleaned = cleaned.replace(kvRegex, "")
+        
+        // Also remove any remaining isolated horizontal rules at the very top
+        cleaned = cleaned.replace(Regex("^---\\s*\\n"), "")
+        
+        return cleaned.trimStart()
+    }
+
     // Get current user drafts
     suspend fun getMyDrafts(): List<SkillDraft> {
-        val user = auth.currentUser ?: return emptyList()
+        val user = auth.currentUser
+        if (user == null) {
+            Log.w("SkillRepository", "getMyDrafts: No authenticated user — returning empty list")
+            return emptyList()
+        }
         return try {
+            Log.d("SkillRepository", "getMyDrafts: Fetching drafts for user ${user.uid}")
             val snapshot = firestore.collection("users").document(user.uid)
                 .collection(DRAFTS_COLLECTION)
                 .get()
                 .await()
-            snapshot.toObjects(SkillDraft::class.java)
+            val drafts = snapshot.toObjects(SkillDraft::class.java)
+            Log.d("SkillRepository", "getMyDrafts: Found ${drafts.size} drafts")
+            drafts
         } catch (e: Exception) {
+            Log.e("SkillRepository", "getMyDrafts: FAILED to load drafts", e)
             emptyList()
         }
     }

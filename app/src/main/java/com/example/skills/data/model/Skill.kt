@@ -14,5 +14,6 @@ data class Skill(
     val fileUrl: String = "", // The URL to the markdown file in Firebase Storage
     val promptTemplate: String = "", // In-line markdown content (optional)
     val authorId: String = "",
-    val authorName: String = ""
+    val authorName: String = "",
+    val createdAt: Long = 0L
 )
